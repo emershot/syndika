@@ -2,7 +2,7 @@
 # Usar com: .\github-push.ps1
 
 $git = "C:\Users\Emerson\Downloads\PortableGit\bin\git.exe"
-$repo = "c:\Users\Emerson\Documents\syndika-monorepo"
+$repo = "C:\Users\Emerson\Documents\SaaS Condominio"
 
 Write-Host "=================="
 Write-Host "🚀 GITHUB PUSH"
