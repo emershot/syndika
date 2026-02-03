@@ -1,0 +1,33 @@
+{
+  "name": "syndika-monorepo",
+  "version": "2.0.0",
+  "description": "Syndika - SaaS de Gestão de Condomínios | Full-stack (Frontend + Backend + Database)",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=frontend & npm run dev --workspace=backend",
+    "build": "npm run build --workspace=frontend && npm run build --workspace=backend",
+    "start": "npm start --workspace=backend",
+    "lint": "npm run lint --workspace=frontend && npm run lint --workspace=backend",
+    "test": "npm test --workspace=frontend && npm test --workspace=backend",
+    "frontend:dev": "npm run dev --workspace=frontend",
+    "frontend:build": "npm run build --workspace=frontend",
+    "backend:dev": "npm run dev --workspace=backend",
+    "backend:build": "npm run build --workspace=backend",
+    "backend:start": "npm start --workspace=backend"
+  },
+  "keywords": [
+    "condominium",
+    "saas",
+    "management",
+    "react",
+    "typescript",
+    "node",
+    "express"
+  ],
+  "author": "Emerson",
+  "license": "MIT"
+}
