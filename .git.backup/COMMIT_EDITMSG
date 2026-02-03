@@ -1,0 +1,8 @@
+chore: Deploy Reservations Module v1.0 - 20 features + 4 bugs fixed
+
+- M1-M20: All 20 improvements implemented (Tier 1-3)
+- Bug fixes: Date serialization, timezone filter, boundaries, route
+- Testing: 9 categories, 78/78 tests passed
+- Features: CRUD, filters, calendars, approval, notifications
+- Quality: TypeScript strict, 0 errors, mobile responsive
+- Build: 5.92s, 1.19 MB, production ready

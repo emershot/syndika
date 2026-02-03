@@ -1,0 +1,9 @@
+0000000000000000000000000000000000000000 788181b148e00fde073f3ac122d8d0483fef943a Emerson <seu-email@email.com> 1765163829 -0300	commit (initial): Initial commit: SYNDIKA MVP - Gestão de Condomínios v1.0.0
+788181b148e00fde073f3ac122d8d0483fef943a 0000000000000000000000000000000000000000 Emerson <seu-email@email.com> 1765163836 -0300	Branch: renamed refs/heads/master to refs/heads/main
+0000000000000000000000000000000000000000 788181b148e00fde073f3ac122d8d0483fef943a Emerson <seu-email@email.com> 1765163836 -0300	Branch: renamed refs/heads/master to refs/heads/main
+788181b148e00fde073f3ac122d8d0483fef943a 582e34cb2f62cae91b4507814e7c44ddfbdd0bd7 Emerson <seu-email@email.com> 1765215726 -0300	commit: Fix: Redirecionamento correto de Morador para Avisos ao invés de Access Denied
+582e34cb2f62cae91b4507814e7c44ddfbdd0bd7 447ab96d646d9d7785cdce627fb3a8c10079000b Emerson <seu-email@email.com> 1765215934 -0300	commit: Fix: Redirecionamento inteligente de Morador para Avisos no login
+447ab96d646d9d7785cdce627fb3a8c10079000b 418b011ba144b7ef8d93e36054582e106f9e6de5 Emerson <seu-email@email.com> 1765222919 -0300	commit: Feat: Sistema completo de Notificações (Bell icon + NotificationCenter + Auto-trigger)
+418b011ba144b7ef8d93e36054582e106f9e6de5 ee83bb114a81dd05caf27ac19bd5ba306d87b668 Emerson <seu-email@email.com> 1765222987 -0300	commit: Feat: Dashboard dinâmico com 4 gráficos Recharts em tempo real
+ee83bb114a81dd05caf27ac19bd5ba306d87b668 4f04050efc1271184f5c01db37e1006dc9c9b741 Emerson <seu-email@email.com> 1765223241 -0300	commit: Feat: Componentes para Advanced Filters (AdvancedFilterBar + MultiSelectFilter)
+4f04050efc1271184f5c01db37e1006dc9c9b741 5b8a735d4744a5862b237e1d36a93dee3686575f Emerson <seu-email@email.com> 1765247940 -0300	commit: chore: Deploy Reservations Module v1.0 - 20 features + 4 bugs fixed
