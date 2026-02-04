@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Building2, ArrowRight, Check, Shield, Zap, Star, Users, TrendingUp } from "lucide-react";
-import { useEffect } from "react";
+import { Building2, ArrowRight, Check, Shield, Zap, Star, MessageSquare, CheckCircle, TrendingDown } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [showFloatingCTA, setShowFloatingCTA] = useState(false);
 
   // GA4 tracking
   useEffect(() => {
@@ -16,10 +17,24 @@ const Index = () => {
     }
   }, []);
 
+  // Mostrar CTA flutuante após scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowFloatingCTA(window.scrollY > 300);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const handleDemoClick = (role: string) => {
     if (window.gtag) window.gtag('event', 'demo_access', { role });
     localStorage.setItem('demoRole', role);
     navigate('/login?demo=true');
+  };
+
+  const handleCTAClick = () => {
+    if (window.gtag) window.gtag('event', 'cta_click', { source: 'floating' });
+    navigate('/login');
   };
 
   return (
@@ -40,356 +55,494 @@ const Index = () => {
             <Building2 className="h-8 w-8 text-primary" />
             <span className="font-heading font-bold text-lg">SYNDIKA</span>
           </div>
-          <div className="flex gap-3">
-            <Button variant="ghost" onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}>
+          <div className="hidden sm:flex gap-3">
+            <Button
+              variant="ghost"
+              onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              Como funciona
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
+            >
               Preços
             </Button>
             <Button onClick={() => navigate('/login')}>
               Entrar
             </Button>
           </div>
+          <div className="sm:hidden">
+            <Button onClick={() => navigate('/login')} size="sm">
+              Entrar
+            </Button>
+          </div>
         </div>
       </nav>
 
-      {/* Hero Section - URGÊNCIA */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-        <div className="text-center max-w-4xl mx-auto mb-16">
-          {/* Badge urgência */}
+      {/* Floating CTA Button (Mobile) */}
+      {showFloatingCTA && (
+        <div className="fixed bottom-4 left-0 right-0 sm:hidden z-40 px-4">
+          <Button
+            onClick={handleCTAClick}
+            className="w-full gap-2"
+          >
+            Teste grátis 30 dias
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
+
+      {/* Hero Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
+        <div className="text-center max-w-4xl mx-auto mb-12 sm:mb-16">
+          {/* Badge prova social */}
           <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-6">
             <Zap className="h-4 w-4" />
-            <span className="text-sm font-semibold">⏰ 100+ síndicos já organizados | 70% menos caos</span>
+            <span className="text-sm font-semibold">100+ síndicos já organizados | 70% menos chamados repetidos</span>
           </div>
 
-          <h1 className="font-heading text-5xl sm:text-7xl font-bold mb-6 text-foreground leading-tight">
-            Cansado de <span className="text-primary">WhatsApp caótico?</span>
+          {/* Headline com dor principal */}
+          <h1 className="font-heading text-4xl sm:text-6xl font-bold mb-6 text-foreground leading-tight">
+            Cansado de <span className="text-primary">WhatsApp caótico</span> no condomínio?
           </h1>
-          
-          <p className="text-xl sm:text-2xl text-muted-foreground mb-4">
-            Centralize avisos, chamados e reservas. Menos WhatsApp, mais eficiência.
-          </p>
-          
-          <p className="text-lg text-muted-foreground mb-10 font-medium">
-            ✅ Teste grátis 30 dias → Zero risco
+
+          {/* Subheadline com benefício concreto */}
+          <p className="text-lg sm:text-xl text-muted-foreground mb-6">
+            Centralize avisos, chamados e reservas em um painel único e reduza chamados repetidos em até 70%.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
+          {/* Garantia */}
+          <div className="flex items-center justify-center gap-2 mb-8">
+            <Check className="h-5 w-5 text-primary" />
+            <p className="text-base font-medium text-foreground">30 dias grátis, sem cartão de crédito</p>
+          </div>
+
+          {/* CTAs principais */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+            <Button
               size="lg"
-              onClick={() => navigate('/login')}
-              className="gap-2 text-lg py-6"
+              onClick={handleCTAClick}
+              className="gap-2 text-base sm:text-lg py-6 sm:py-7"
             >
-              🚀 TESTE GRÁTIS 30 DIAS
+              Teste grátis 30 dias
               <ArrowRight className="h-5 w-5" />
             </Button>
-            <Button 
+            <Button
               size="lg"
               variant="outline"
               onClick={() => handleDemoClick('sindico')}
-              className="gap-2 text-lg py-6"
+              className="gap-2 text-base sm:text-lg py-6 sm:py-7"
             >
-              👨‍💼 Ver Dashboard Síndico
+              Ver Dashboard Síndico
             </Button>
           </div>
 
-          {/* Social proof no hero */}
-          <div className="mt-12 grid grid-cols-3 gap-8 max-w-2xl mx-auto">
+          {/* Métricas no hero */}
+          <div className="grid grid-cols-3 gap-4 sm:gap-8 max-w-2xl mx-auto mt-12 sm:mt-16">
             <div className="text-center">
-              <div className="text-3xl font-bold text-primary">100+</div>
-              <div className="text-sm text-muted-foreground">Síndicos Ativos</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">200+</div>
-              <div className="text-sm text-muted-foreground">Unidades Gerenciadas</div>
+              <div className="text-2xl sm:text-3xl font-bold text-primary">100+</div>
+              <div className="text-xs sm:text-sm text-muted-foreground mt-1">Síndicos ativos</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-primary">70%</div>
-              <div className="text-sm text-muted-foreground">Menos Chamados</div>
+              <div className="text-2xl sm:text-3xl font-bold text-primary">200+</div>
+              <div className="text-xs sm:text-sm text-muted-foreground mt-1">Unidades gerenciadas</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl sm:text-3xl font-bold text-primary">70%</div>
+              <div className="text-xs sm:text-sm text-muted-foreground mt-1">Menos chamados</div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
-          <div className="p-6 rounded-xl border border-border hover:border-primary/50 transition-colors">
-            <div className="h-12 w-12 rounded-lg bg-primary-light flex items-center justify-center mb-4">
-              <Zap className="h-6 w-6 text-primary" />
+      {/* Testimonials Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+        <h2 className="font-heading text-3xl sm:text-4xl font-bold mb-4 text-center">
+          Veja como outros síndicos reduziram retrabalho com a SYNDIKA
+        </h2>
+        <p className="text-center text-muted-foreground mb-12">4,9/5 de satisfação entre síndicos que testaram</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="rounded-xl border border-border bg-card p-8 hover:border-primary/50 transition-colors">
+            <div className="flex gap-1 mb-4">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+              ))}
             </div>
-            <h3 className="font-heading font-bold text-lg mb-2">Rápido e Intuitivo</h3>
-            <p className="text-muted-foreground">
-              Interface amigável que não requer treinamento. Comece a usar em minutos.
+            <p className="font-semibold text-foreground mb-3">
+              "Reduziu chamados repetitivos em 70%"
             </p>
-          </div>
-
-          <div className="p-6 rounded-xl border border-border hover:border-primary/50 transition-colors">
-            <div className="h-12 w-12 rounded-lg bg-primary-light flex items-center justify-center mb-4">
-              <Shield className="h-6 w-6 text-primary" />
-            </div>
-            <h3 className="font-heading font-bold text-lg mb-2">Seguro e Confiável</h3>
-            <p className="text-muted-foreground">
-              Seus dados estão sempre protegidos com criptografia de nível empresarial.
+            <p className="text-sm text-muted-foreground mb-6">
+              João, síndico de condomínio residencial, 80 unidades, Curitiba/PR conseguiu controlar o volume de chamados com avisos automáticos e confirmação de leitura.
             </p>
+            <p className="text-xs font-medium text-primary">Teste aprovado</p>
           </div>
 
-          <div className="p-6 rounded-xl border border-border hover:border-primary/50 transition-colors">
-            <div className="h-12 w-12 rounded-lg bg-primary-light flex items-center justify-center mb-4">
-              <Check className="h-6 w-6 text-primary" />
+          <div className="rounded-xl border border-border bg-card p-8 hover:border-primary/50 transition-colors">
+            <div className="flex gap-1 mb-4">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+              ))}
             </div>
-            <h3 className="font-heading font-bold text-lg mb-2">Suporte Completo</h3>
-            <p className="text-muted-foreground">
-              Equipe dedicada pronta para ajudar você a aproveitar ao máximo.
+            <p className="font-semibold text-foreground mb-3">
+              "Acaba com conflitos de horário"
             </p>
+            <p className="text-sm text-muted-foreground mb-6">
+              Marina, conselheira de condomínio residencial, 120 unidades, São Paulo/SP eliminou sobreposições e desentendimentos em reservas com regras automáticas.
+            </p>
+            <p className="text-xs font-medium text-primary">Teste aprovado</p>
+          </div>
+
+          <div className="rounded-xl border border-border bg-card p-8 hover:border-primary/50 transition-colors">
+            <div className="flex gap-1 mb-4">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+              ))}
+            </div>
+            <p className="font-semibold text-foreground mb-3">
+              "Recupera 15h/semana de trabalho"
+            </p>
+            <p className="text-sm text-muted-foreground mb-6">
+              Roberto, síndico de condomínio residencial, 150 unidades, Rio de Janeiro/RJ ganhou tempo significativo em comunicação centralizada com histórico completo.
+            </p>
+            <p className="text-xs font-medium text-primary">Teste aprovado</p>
           </div>
         </div>
+      </section>
 
-        {/* SOCIAL PROOF - DEPOIMENTOS */}
-        <div className="mt-24 py-16 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20">
-          <h2 className="font-heading text-3xl font-bold mb-12 text-center">
-            Síndicos que já economizam tempo e dinheiro
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-6">
-            <div className="bg-background rounded-xl p-8 border border-border">
-              <div className="flex gap-1 mb-4">
-                {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-primary text-primary" />)}
-              </div>
-              <p className="text-foreground font-semibold mb-2">"Reduziu chamados em 70%"</p>
-              <p className="text-muted-foreground text-sm mb-4">
-                Síndico Esperança conseguiu controlar o volume de chamados repetitivos com avisos automáticos.
-              </p>
-              <p className="text-sm font-semibold text-primary">— João Silva, Síndico</p>
-            </div>
+      {/* Features Section */}
+      <section id="features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 bg-muted/30 rounded-2xl">
+        <h2 className="font-heading text-3xl sm:text-4xl font-bold mb-16 text-center">
+          Recursos para cada desafio do síndico
+        </h2>
 
-            <div className="bg-background rounded-xl p-8 border border-border">
-              <div className="flex gap-1 mb-4">
-                {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-primary text-primary" />)}
-              </div>
-              <p className="text-foreground font-semibold mb-2">"Zero conflito em reservas"</p>
-              <p className="text-muted-foreground text-sm mb-4">
-                Condomínio Horizonte eliminou sobreposições e desentendimentos em reservas.
-              </p>
-              <p className="text-sm font-semibold text-primary">— Maria Santos, Conselho</p>
+        {/* Features Grid com grupos */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          {/* Comunicação organizada */}
+          <div className="rounded-xl border border-border bg-background p-8">
+            <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
+              <MessageSquare className="h-6 w-6 text-primary" />
             </div>
+            <h3 className="font-heading font-bold text-xl mb-4">Comunicação organizada</h3>
+            <ul className="space-y-3 text-sm text-muted-foreground">
+              <li className="flex gap-3">
+                <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                <span>Mural de avisos com anexos, histórico e confirmação de leitura</span>
+              </li>
+              <li className="flex gap-3">
+                <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                <span>Notificações automáticas por e-mail para todos os moradores</span>
+              </li>
+              <li className="flex gap-3">
+                <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                <span>Integração com e-mail corporativo do condomínio</span>
+              </li>
+            </ul>
+          </div>
 
-            <div className="bg-background rounded-xl p-8 border border-border">
-              <div className="flex gap-1 mb-4">
-                {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-primary text-primary" />)}
-              </div>
-              <p className="text-foreground font-semibold mb-2">"Economia de tempo real"</p>
-              <p className="text-muted-foreground text-sm mb-4">
-                Ganhou 15h/semana em comunicação desorganizada. Agora tudo é centralizado.
-              </p>
-              <p className="text-sm font-semibold text-primary">— Roberto Costa, Síndico</p>
+          {/* Operação sem conflito */}
+          <div className="rounded-xl border border-border bg-background p-8">
+            <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
+              <CheckCircle className="h-6 w-6 text-primary" />
             </div>
+            <h3 className="font-heading font-bold text-xl mb-4">Operação sem conflito</h3>
+            <ul className="space-y-3 text-sm text-muted-foreground">
+              <li className="flex gap-3">
+                <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                <span>Reservas com regras claras, confirmação automática e avisos</span>
+              </li>
+              <li className="flex gap-3">
+                <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                <span>Sistema de chamados organizado com priorização automática</span>
+              </li>
+              <li className="flex gap-3">
+                <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                <span>Gestão centralizada de moradores e suas informações</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Transparência para o conselho */}
+          <div className="rounded-xl border border-border bg-background p-8">
+            <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
+              <TrendingDown className="h-6 w-6 text-primary" />
+            </div>
+            <h3 className="font-heading font-bold text-xl mb-4">Transparência para o conselho</h3>
+            <ul className="space-y-3 text-sm text-muted-foreground">
+              <li className="flex gap-3">
+                <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                <span>Relatórios e estatísticas em tempo real sobre operações</span>
+              </li>
+              <li className="flex gap-3">
+                <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                <span>Histórico completo e auditável de todas as ações</span>
+              </li>
+              <li className="flex gap-3">
+                <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                <span>Acesso mobile-friendly para consultas rápidas</span>
+              </li>
+            </ul>
           </div>
         </div>
+      </section>
 
-        {/* Features List */}
-        <div className="mt-24 p-12 rounded-2xl bg-card border border-border">
-          <h2 className="font-heading text-3xl font-bold mb-12 text-center">
-            Recursos Inclusos
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {[
-              'Mural de avisos com anexos',
-              'Sistema de chamados organizado',
-              'Reserva de áreas comuns',
-              'Gestão de moradores',
-              'Relatórios e estatísticas',
-              'Notificações automáticas',
-              'Integração com e-mail',
-              'Acesso mobile-friendly',
-            ].map((feature) => (
-              <div key={feature} className="flex items-center gap-3">
-                <Check className="h-5 w-5 text-success" />
-                <span className="text-foreground">{feature}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+      {/* PRICING SECTION */}
+      <section id="pricing" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+        <h2 className="font-heading text-3xl sm:text-4xl font-bold text-center mb-4">
+          Planos simples e transparentes
+        </h2>
+        <p className="text-center text-muted-foreground mb-12">
+          Sem fidelidade. Cancele quando quiser.
+        </p>
 
-        {/* PRICING SECTION - CLARO E DIRETO */}
-        <div id="pricing" className="mt-24 scroll-mt-20">
-          <h2 className="font-heading text-4xl font-bold text-center mb-16">
-            Preços Simples e Transparentes
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
-            {/* Starter */}
-            <div className="rounded-2xl border-2 border-border p-10 hover:border-primary transition-colors">
-              <div className="mb-6">
-                <h3 className="font-heading text-2xl font-bold mb-2">Starter</h3>
-                <p className="text-muted-foreground mb-4">Para pequenos condomínios</p>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-bold">R$49</span>
-                  <span className="text-muted-foreground">/mês</span>
-                </div>
-                <p className="text-sm text-muted-foreground mt-2">até 80 unidades</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+          {/* Starter */}
+          <div className="rounded-2xl border-2 border-border p-8 sm:p-10 hover:border-primary transition-colors">
+            <div className="mb-6">
+              <h3 className="font-heading text-xl sm:text-2xl font-bold mb-2">Starter</h3>
+              <p className="text-sm text-muted-foreground mb-4">Ideal para pequenos condomínios</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-4xl font-bold">R$ 49</span>
+                <span className="text-muted-foreground">/mês</span>
               </div>
-              <Button 
-                size="lg"
-                className="w-full mb-6"
-                onClick={() => handleDemoClick('starter')}
-              >
-                TESTAR STARTER
-              </Button>
-              <ul className="space-y-3 text-sm">
-                <li className="flex gap-3">
-                  <Check className="h-5 w-5 text-success flex-shrink-0" />
-                  <span>Até 80 unidades</span>
-                </li>
-                <li className="flex gap-3">
-                  <Check className="h-5 w-5 text-success flex-shrink-0" />
-                  <span>Avisos, chamados, reservas</span>
-                </li>
-                <li className="flex gap-3">
-                  <Check className="h-5 w-5 text-success flex-shrink-0" />
-                  <span>Notificações por e-mail</span>
-                </li>
-              </ul>
+              <p className="text-xs text-muted-foreground mt-2">Até 80 unidades</p>
             </div>
-
-            {/* Pro */}
-            <div className="rounded-2xl border-2 border-primary p-10 relative">
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <span className="bg-primary text-primary-foreground px-4 py-1 rounded-full text-xs font-semibold">
-                  MAIS POPULAR
-                </span>
-              </div>
-              <div className="mb-6">
-                <h3 className="font-heading text-2xl font-bold mb-2">Pro</h3>
-                <p className="text-muted-foreground mb-4">Para condomínios maiores</p>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-bold">R$99</span>
-                  <span className="text-muted-foreground">/mês</span>
-                </div>
-                <p className="text-sm text-muted-foreground mt-2">201+ unidades</p>
-              </div>
-              <Button 
-                size="lg"
-                className="w-full mb-6"
-                onClick={() => handleDemoClick('pro')}
-              >
-                TESTAR PRO
-              </Button>
-              <ul className="space-y-3 text-sm">
-                <li className="flex gap-3">
-                  <Check className="h-5 w-5 text-success flex-shrink-0" />
-                  <span>Unidades ilimitadas</span>
-                </li>
-                <li className="flex gap-3">
-                  <Check className="h-5 w-5 text-success flex-shrink-0" />
-                  <span>Todos recursos Starter +</span>
-                </li>
-                <li className="flex gap-3">
-                  <Check className="h-5 w-5 text-success flex-shrink-0" />
-                  <span>Relatórios avançados</span>
-                </li>
-                <li className="flex gap-3">
-                  <Check className="h-5 w-5 text-success flex-shrink-0" />
-                  <span>Suporte prioritário</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <p className="text-center text-muted-foreground text-sm mt-8">
-            ✅ 30 dias grátis em todos os planos. Sem cartão de crédito. Sem compromisso.
-          </p>
-        </div>
-
-        {/* DEMO INTEGRADA - ACESSO RÁPIDO */}
-        <div className="mt-24 py-16 rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 border border-primary/20">
-          <h2 className="font-heading text-3xl font-bold text-center mb-12">
-            Teste Agora - Sem Cadastro Prévio
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto px-6">
-            <button
-              onClick={() => handleDemoClick('sindico')}
-              className="group p-8 rounded-xl bg-background border-2 border-border hover:border-primary hover:shadow-lg transition-all cursor-pointer"
+            <Button
+              size="lg"
+              className="w-full mb-6"
+              onClick={() => handleDemoClick('starter')}
             >
-              <div className="text-4xl mb-4">👨‍💼</div>
-              <h3 className="font-heading font-bold text-lg mb-2 group-hover:text-primary transition">
-                Ver Dashboard Síndico
-              </h3>
-              <p className="text-muted-foreground text-sm mb-4">
-                Visualize como um síndico gerencia avisos, chamados e moradores
-              </p>
-              <p className="text-xs font-semibold text-primary">
-                Admin / demo123 →
-              </p>
-            </button>
+              Testar Starter
+            </Button>
+            <ul className="space-y-3 text-sm">
+              <li className="flex gap-3">
+                <Check className="h-5 w-5 text-success flex-shrink-0" />
+                <span>Até 80 unidades</span>
+              </li>
+              <li className="flex gap-3">
+                <Check className="h-5 w-5 text-success flex-shrink-0" />
+                <span>Avisos, chamados, reservas</span>
+              </li>
+              <li className="flex gap-3">
+                <Check className="h-5 w-5 text-success flex-shrink-0" />
+                <span>Notificações automáticas</span>
+              </li>
+              <li className="flex gap-3">
+                <Check className="h-5 w-5 text-success flex-shrink-0" />
+                <span>Gestão de moradores</span>
+              </li>
+            </ul>
+          </div>
 
-            <button
-              onClick={() => handleDemoClick('morador')}
-              className="group p-8 rounded-xl bg-background border-2 border-border hover:border-primary hover:shadow-lg transition-all cursor-pointer"
+          {/* Pro */}
+          <div className="rounded-2xl border-2 border-primary p-8 sm:p-10 relative">
+            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+              <span className="bg-primary text-primary-foreground px-4 py-1 rounded-full text-xs font-semibold">
+                MAIS POPULAR
+              </span>
+            </div>
+            <div className="mb-6">
+              <h3 className="font-heading text-xl sm:text-2xl font-bold mb-2">Pro</h3>
+              <p className="text-sm text-muted-foreground mb-4">Para condomínios maiores e complexos</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-4xl font-bold">R$ 99</span>
+                <span className="text-muted-foreground">/mês</span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">A partir de 81 unidades</p>
+            </div>
+            <Button
+              size="lg"
+              className="w-full mb-6"
+              onClick={() => handleDemoClick('pro')}
             >
-              <div className="text-4xl mb-4">👤</div>
-              <h3 className="font-heading font-bold text-lg mb-2 group-hover:text-primary transition">
-                Testar Como Morador
-              </h3>
-              <p className="text-muted-foreground text-sm mb-4">
-                Explore a experiência de um morador visualizando avisos e criando chamados
-              </p>
-              <p className="text-xs font-semibold text-primary">
-                Morador / morador123 →
-              </p>
-            </button>
+              Testar Pro
+            </Button>
+            <ul className="space-y-3 text-sm">
+              <li className="flex gap-3">
+                <Check className="h-5 w-5 text-success flex-shrink-0" />
+                <span>Unidades ilimitadas</span>
+              </li>
+              <li className="flex gap-3">
+                <Check className="h-5 w-5 text-success flex-shrink-0" />
+                <span>Todos recursos do Starter</span>
+              </li>
+              <li className="flex gap-3">
+                <Check className="h-5 w-5 text-success flex-shrink-0" />
+                <span>Relatórios avançados e exportação</span>
+              </li>
+              <li className="flex gap-3">
+                <Check className="h-5 w-5 text-success flex-shrink-0" />
+                <span>Suporte prioritário por WhatsApp</span>
+              </li>
+            </ul>
           </div>
         </div>
 
-        {/* FORM OTIMIZADO - 3 CAMPOS */}
-        <div className="mt-24 py-16 max-w-md mx-auto">
-          <h2 className="font-heading text-3xl font-bold text-center mb-4">
-            Receber Proposta Personalizada
+        <p className="text-center text-muted-foreground text-xs sm:text-sm mt-8">
+          ✅ 30 dias grátis em todos os planos • Sem cartão de crédito • Sem compromisso
+        </p>
+        <p className="text-center text-muted-foreground text-xs mt-2">
+          Para condomínios com mais de 200 unidades, consulte-nos para plano personalizado.
+        </p>
+      </section>
+
+      {/* DEMO SECTION */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+        <h2 className="font-heading text-3xl sm:text-4xl font-bold text-center mb-12">
+          Teste a SYNDIKA agora, sem cadastro
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto mb-8">
+          <button
+            onClick={() => handleDemoClick('sindico')}
+            className="group p-8 sm:p-10 rounded-xl bg-card border-2 border-border hover:border-primary hover:shadow-lg transition-all cursor-pointer text-left"
+          >
+            <div className="text-5xl mb-4">👨‍💼</div>
+            <h3 className="font-heading font-bold text-lg sm:text-xl mb-3 group-hover:text-primary transition">
+              Ver Dashboard Síndico
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Visualize como você vai gerenciar avisos, chamados, reservas e moradores em um painel único.
+            </p>
+            <p className="text-xs font-semibold text-primary">
+              Credenciais: admin / demo123 →
+            </p>
+          </button>
+
+          <button
+            onClick={() => handleDemoClick('morador')}
+            className="group p-8 sm:p-10 rounded-xl bg-card border-2 border-border hover:border-primary hover:shadow-lg transition-all cursor-pointer text-left"
+          >
+            <div className="text-5xl mb-4">👤</div>
+            <h3 className="font-heading font-bold text-lg sm:text-xl mb-3 group-hover:text-primary transition">
+              Testar como Morador
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Explore a experiência do morador: veja avisos, crie chamados e reserve áreas comuns.
+            </p>
+            <p className="text-xs font-semibold text-primary">
+              Credenciais: morador / morador123 →
+            </p>
+          </button>
+        </div>
+
+        <p className="text-center text-xs text-muted-foreground">
+          Ambiente de demonstração com dados fictícios para você testar sem risco.
+        </p>
+      </section>
+
+      {/* PROPOSAL FORM SECTION */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 bg-muted/30 rounded-2xl">
+        <div className="max-w-md mx-auto">
+          <h2 className="font-heading text-3xl font-bold text-center mb-3">
+            Receber proposta personalizada
           </h2>
-          <p className="text-center text-muted-foreground mb-8">
-            ⏱️ Proposta em 5 minutos | Sem compromisso
+          <p className="text-center text-muted-foreground mb-2">
+            Proposta em até 5 minutos, personalizada para seu condomínio
           </p>
-          <form 
+          <p className="text-center text-xs text-muted-foreground mb-8">
+            Usamos seu contato apenas para enviar sua proposta. Nada de grupos ou spam.
+          </p>
+
+          <form
             onSubmit={(e) => {
               e.preventDefault();
-              if (window.gtag) window.gtag('event', 'form_submit', { form_type: 'contact' });
-              const formData = new FormData(e.currentTarget);
-              // Implementar envio real via API
+              if (window.gtag) window.gtag('event', 'form_submit', { form_type: 'proposal' });
               alert('Obrigado! Entraremos em contato em breve.');
             }}
-            className="space-y-4 bg-card border border-border rounded-xl p-8"
+            className="space-y-4 bg-background border border-border rounded-xl p-6 sm:p-8"
           >
             <div>
               <label className="text-sm font-semibold mb-2 block">Nome completo</label>
-              <input 
-                type="text" 
-                name="name" 
+              <input
+                type="text"
+                name="name"
                 placeholder="João Silva"
-                required 
-                className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none transition"
+                required
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none transition text-sm"
               />
             </div>
+
             <div>
               <label className="text-sm font-semibold mb-2 block">WhatsApp</label>
-              <input 
-                type="tel" 
-                name="whatsapp" 
+              <input
+                type="tel"
+                name="whatsapp"
                 placeholder="(11) 99999-9999"
                 required
-                className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none transition"
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none transition text-sm"
               />
             </div>
+
             <div>
               <label className="text-sm font-semibold mb-2 block">Unidades no condomínio</label>
-              <select 
-                name="units" 
+              <select
+                name="units"
                 required
-                className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none transition"
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none transition text-sm"
               >
-                <option value="">Selecionar...</option>
+                <option value="">Selecione...</option>
                 <option value="1-20">1 - 20 unidades</option>
                 <option value="21-80">21 - 80 unidades</option>
                 <option value="81-200">81 - 200 unidades</option>
                 <option value="200+">200+ unidades</option>
               </select>
             </div>
+
+            <div>
+              <label className="text-sm font-semibold mb-2 block">Preferência de contato</label>
+              <select
+                name="contact_preference"
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none transition text-sm"
+              >
+                <option value="whatsapp">WhatsApp</option>
+                <option value="email">E-mail</option>
+                <option value="phone">Ligação</option>
+              </select>
+            </div>
+
             <Button size="lg" className="w-full">
               Receber Proposta Grátis
             </Button>
           </form>
+        </div>
+      </section>
+
+      {/* FAQ SECTION */}
+      <section className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+        <h2 className="font-heading text-3xl sm:text-4xl font-bold text-center mb-12">
+          Dúvidas frequentes
+        </h2>
+
+        <div className="space-y-6">
+          <div className="rounded-lg border border-border p-6 hover:border-primary transition-colors">
+            <h3 className="font-heading font-bold text-lg mb-3">Preciso instalar algo no computador?</h3>
+            <p className="text-sm text-muted-foreground">
+              Não. SYNDIKA é 100% online. Acesse pelo navegador do seu computador ou celular. Apenas compartilhe o link com moradores e síndicos.
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-border p-6 hover:border-primary transition-colors">
+            <h3 className="font-heading font-bold text-lg mb-3">Posso cancelar a qualquer momento?</h3>
+            <p className="text-sm text-muted-foreground">
+              Sim. Sem fidelidade, sem penalidades. Cancele quando quiser pelo painel de conta. Você continuará com acesso até o final do período pago.
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-border p-6 hover:border-primary transition-colors">
+            <h3 className="font-heading font-bold text-lg mb-3">Moradores pagam alguma mensalidade?</h3>
+            <p className="text-sm text-muted-foreground">
+              Não. Apenas o síndico ou administradora paga. Moradores recebem acesso gratuito para visualizar avisos, fazer chamados e reservar áreas.
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-border p-6 hover:border-primary transition-colors">
+            <h3 className="font-heading font-bold text-lg mb-3">Como funciona o suporte?</h3>
+            <p className="text-sm text-muted-foreground">
+              Suporte por e-mail incluído em ambos planos. Plano Pro inclui suporte prioritário por WhatsApp em até 2 horas, de seg a sex, das 8h às 18h.
+            </p>
+          </div>
         </div>
       </section>
 
