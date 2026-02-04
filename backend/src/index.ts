@@ -7,7 +7,7 @@ import authRoutes from './routes/auth';
 import tenantRoutes from './routes/tenants';
 import { testConnection } from './config/database';
 import { logger, requestLogger } from './utils/logger';
-import { sendSuccess, sendError } from './utils/response';
+import { sendError } from './utils/response';
 
 dotenv.config();
 
@@ -85,7 +85,7 @@ app.use(requestLogger);
 // ============================================================================
 
 // GET /health - Health Check Endpoint
-app.get('/health', async (req: Request, res: Response) => {
+app.get('/health', async (_req: Request, res: Response) => {
   try {
     const isConnected = await testConnection();
     if (!isConnected) {
@@ -119,7 +119,7 @@ app.get('/health', async (req: Request, res: Response) => {
 });
 
 // GET / - Root Endpoint
-app.get('/', (req: Request, res: Response) => {
+app.get('/', (_req: Request, res: Response) => {
   res.status(200).json({
     message: 'Welcome to SYNDIKA API',
     version: '2.0.0',
@@ -135,7 +135,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // GET /api/v1 - API v1 Base
-app.get('/api/v1', (req: Request, res: Response) => {
+app.get('/api/v1', (_req: Request, res: Response) => {
   res.status(200).json({
     message: 'SYNDIKA API v1',
     modules: {
@@ -172,7 +172,7 @@ app.use((req: Request, res: Response) => {
 // Error Handling Middleware
 // ============================================================================
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
   logger.error('Unhandled error:', {
     message: err.message,
     stack: NODE_ENV === 'development' ? err.stack : undefined,

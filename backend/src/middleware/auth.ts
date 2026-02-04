@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { JWTPayload, AuthenticatedRequest, UserRole } from '../types/index';
 
@@ -6,7 +6,7 @@ import { JWTPayload, AuthenticatedRequest, UserRole } from '../types/index';
 // JWT Configuration - MUST be set in environment (Production Requirement)
 // ============================================================================
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET || '';
 if (!JWT_SECRET) {
   throw new Error(
     'CRITICAL ERROR: JWT_SECRET environment variable is not defined.\n' +
@@ -25,18 +25,16 @@ export function generateToken(
   tenantId: string,
   email: string,
   role: UserRole,
-  expiresIn: string = '24h'
+  expiresIn = '24h'
 ): string {
-  const payload: JWTPayload = {
+  const payload = {
     userId,
     tenantId,
     email,
     role,
-    iat: Math.floor(Date.now() / 1000),
-    exp: 0, // Will be set by jwt.sign
   };
 
-  return jwt.sign(payload, JWT_SECRET, { expiresIn });
+  return jwt.sign(payload, JWT_SECRET, { expiresIn } as jwt.SignOptions);
 }
 
 // ============================================================================

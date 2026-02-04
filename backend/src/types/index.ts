@@ -2,6 +2,8 @@
 // TypeScript Types for SYNDIKA API
 // ============================================================================
 
+import { Request } from 'express';
+
 // ============================================================================
 // JWT & Authentication
 // ============================================================================
@@ -265,7 +267,7 @@ export interface APIResponse<T = any> {
 // Request extensions (for middleware)
 // ============================================================================
 
-export interface AuthenticatedRequest extends Express.Request {
+export interface AuthenticatedRequest extends Request {
   user?: {
     userId: string;
     tenantId: string;

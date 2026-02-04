@@ -1,7 +1,7 @@
 import { Router, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
-import { AuthenticatedRequest, AuthRequest, RegisterRequest, AuthResponse } from '../types/index';
+import { AuthenticatedRequest, AuthRequest, RegisterRequest } from '../types/index';
 import { generateToken, asyncHandler, authMiddleware } from '../middleware/auth';
 import * as db from '../config/database';
 

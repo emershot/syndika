@@ -1,7 +1,7 @@
 import { Router, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { AuthenticatedRequest, CreateTicketRequest, UpdateTicketRequest } from '../types/index';
-import { authMiddleware, tenantCheckMiddleware, asyncHandler, roleCheckMiddleware } from '../middleware/auth';
+import { AuthenticatedRequest, CreateTicketRequest } from '../types/index';
+import { authMiddleware, tenantCheckMiddleware, asyncHandler } from '../middleware/auth';
 import * as db from '../config/database';
 
 const router = Router();
