@@ -13,6 +13,10 @@
     {
       "source": "/health",
       "destination": "https://syndika-backend.onrender.com/health"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [
