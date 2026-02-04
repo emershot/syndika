@@ -31,10 +31,12 @@ export function useTickets(options: UseTicketsOptions = {}) {
   const { enabled = true, ...params } = options;
 
   return useQuery<Ticket[], Error>({
-    queryKey: QUERY_KEYS.tickets.list(params),
+    queryKey: QUERY_KEYS.tickets.all(),
     queryFn: () => ticketsAPI.list(params),
     enabled,
-    staleTime: 2 * 60 * 1000, // 2 minutos
+    staleTime: 5 * 60 * 1000, // 5 minutos
+    retry: 3,
+    retryDelay: 1000,
   });
 }
 

@@ -195,7 +195,7 @@ function AppRoutes() {
         path="*"
         element={
           <Suspense fallback={<PageSkeleton />}>
-            <NotFound />
+            <Navigate to="/dashboard" replace />
           </Suspense>
         }
       />
@@ -218,7 +218,7 @@ function AppRoutes() {
  */
 function App() {
   return (
-    <ErrorBoundary>
+    <ErrorBoundary fallback={<Navigate to="/login" replace />}>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <AuthProvider>
