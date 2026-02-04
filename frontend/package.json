@@ -67,8 +67,15 @@
     "vaul": "^0.9.9",
     "zod": "^3.23.8"
   },
+  "overrides": {
+    "@babel/generator": "7.29.1",
+    "@types/node": "20.19.31",
+    "electron-to-chromium": "1.5.286",
+    "@esbuild/win32-x64": "0.27.2",
+    "@rollup/rollup-win32-x64-msvc": "4.57.1"
+  },
   "devDependencies": {
-    "@types/node": "^20.11.19",
+    "@types/node": "20.19.31",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
     "@typescript-eslint/eslint-plugin": "^6.20.0",
