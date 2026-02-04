@@ -39,14 +39,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Meta tags para SEO */}
-      <head>
-        <title>Syndika - Gestão de Condomínio Sem WhatsApp | 30 Dias Grátis</title>
-        <meta name="description" content="Plataforma completa para gestão de condomínios. Avisos, chamados, reservas e moradores organizados. Teste grátis por 30 dias. Zero risco." />
-        <meta name="keywords" content="gestão condomínio, síndico, avisos, chamados, reservas, software condomínio" />
-        <meta property="og:title" content="Syndika - Gestão Condomínio Sem WhatsApp" />
-        <meta property="og:description" content="Organizar condomínio nunca foi tão fácil. Teste grátis por 30 dias." />
-      </head>
 
       {/* Navigation */}
       <nav className="border-b border-border sticky top-0 bg-background/95 backdrop-blur z-50">

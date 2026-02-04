@@ -69,7 +69,7 @@ export const mockUsers: User[] = [
   {
     id: 'user-1',
     name: 'Carlos Silva',
-    email: 'carlos@email.com',
+    email: 'admin@demo.com',
     phone: '(11) 99999-1234',
     role: 'sindico',
     condominiumId: 'condo-1',
@@ -78,7 +78,7 @@ export const mockUsers: User[] = [
   {
     id: 'user-2',
     name: 'Maria Santos',
-    email: 'maria@email.com',
+    email: 'morador@demo.com',
     phone: '(11) 99999-5678',
     role: 'morador',
     condominiumId: 'condo-1',

@@ -64,10 +64,15 @@ export default function Login() {
           navigate('/avisos');
         }
       } else {
-        setError(result.error || "E-mail ou senha incorretos.");
+          // Garantir que error seja sempre string
+          const errorMessage = typeof result.error === 'string' 
+            ? result.error 
+            : result.error?.message || "E-mail ou senha incorretos.";
+        
+          setError(errorMessage);
         toast({
           title: "Erro no login",
-          description: result.error || "E-mail ou senha incorretos.",
+            description: errorMessage,
           variant: "destructive",
         });
       }
@@ -94,8 +99,10 @@ export default function Login() {
     setPasswordError('');
     setIsLoading(true);
 
+    const demoPassword = emailDemo === 'admin@demo.com' ? 'demo123' : 'morador123';
+
     try {
-      const result = await login(emailDemo, 'demo');
+      const result = await login(emailDemo, demoPassword);
       if (result.success) {
         toast({
           title: "Bem-vindo!",
@@ -108,7 +115,10 @@ export default function Login() {
           navigate('/avisos');
         }
       } else {
-        setError(result.error || "Erro ao fazer login.");
+          const errorMessage = typeof result.error === 'string'
+           ? result.error
+           : result.error?.message || "Erro ao fazer login.";
+          setError(errorMessage);
       }
     } catch (error) {
       setError("Erro ao fazer login de demonstração.");

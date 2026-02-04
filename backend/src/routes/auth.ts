@@ -138,9 +138,6 @@ router.post(
 router.post(
   '/login',
   asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-    // Log temporário para debug
-    console.log('LOGIN_REQUEST', req.body);
-
     try {
       const { email, password, tenantSlug } = req.body as AuthRequest & { tenantSlug: string };
 

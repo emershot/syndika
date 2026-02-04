@@ -134,11 +134,17 @@ apiClient.interceptors.response.use(
       }
     }
     
-    // Erros amigáveis
-    const errorMessage = error.response?.data?.message 
-      || error.response?.data?.error 
-      || error.message 
-      || 'Erro ao comunicar com o servidor';
+    // Erros amigáveis (sempre string)
+    let errorMessage = 'Erro ao comunicar com o servidor';
+
+    const apiError = error.response?.data as any;
+    if (apiError?.error?.message) {
+      errorMessage = apiError.error.message;
+    } else if (apiError?.message) {
+      errorMessage = apiError.message;
+    } else if (typeof error.message === 'string') {
+      errorMessage = error.message;
+    }
     
     console.error('[API Error]', errorMessage, error.response?.data);
     
