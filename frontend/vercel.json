@@ -13,10 +13,23 @@
     {
       "source": "/health",
       "destination": "https://syndika-backend.onrender.com/health"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "https://syndika-backend.onrender.com/api/$1"
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/health",
+      "dest": "https://syndika-backend.onrender.com/health"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ],
   "headers": [
@@ -36,13 +49,6 @@
           "value": "Content-Type, Authorization"
         }
       ]
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/dashboard",
-      "destination": "/dashboard",
-      "permanent": false
     }
   ],
   "env": {
