@@ -9,18 +9,13 @@ dotenv.config();
 // Database Pool Configuration
 // ============================================================================
 
-const host = process.env.DB_HOST || 'localhost';
-const shouldUseSSL =
-  process.env.DB_SSL === 'true' ||
-  /supabase\.com|neon\.tech|render\.com|pooler\.supabase\.com/i.test(host);
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL environment variable is not set');
+}
 
 const pool = new Pool({
-  host,
-  port: parseInt(process.env.DB_PORT || '5432'),
-  database: process.env.DB_NAME || 'syndika_db',
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || 'password',
-  ssl: shouldUseSSL ? { rejectUnauthorized: false } : undefined,
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
