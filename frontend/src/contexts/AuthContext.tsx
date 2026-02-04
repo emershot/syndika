@@ -158,11 +158,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
           }
 
-          // API falhou e não temos fallback - retornar erro
-          const errorMessage =
-            apiError?.response?.data?.message ||
-            apiError?.message ||
-            'E-mail ou senha incorretos';
+          // API falhou e não temos fallback - retornar erro como string
+          let errorMessage = 'Não foi possível fazer login. Tente novamente em alguns instantes.';
+          
+          // Tentar extrair mensagem de erro da resposta da API
+          if (apiError?.response?.data?.error?.message) {
+            errorMessage = apiError.response.data.error.message;
+          } else if (apiError?.response?.data?.message) {
+            errorMessage = apiError.response.data.message;
+          } else if (apiError?.message) {
+            errorMessage = apiError.message;
+          }
 
           return {
             success: false,
@@ -172,9 +178,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } catch (error: any) {
         console.error('[AuthContext] ❌ Erro no login:', error);
 
+        let errorMessage = 'Erro ao fazer login. Tente novamente.';
+        if (typeof error === 'string') {
+          errorMessage = error;
+        } else if (error?.message) {
+          errorMessage = error.message;
+        }
+
         return {
           success: false,
-          error: error?.message || 'Erro ao fazer login. Tente novamente.',
+          error: errorMessage,
         };
       }
     },

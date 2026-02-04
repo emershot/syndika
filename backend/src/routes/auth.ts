@@ -138,22 +138,26 @@ router.post(
 router.post(
   '/login',
   asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-    const { email, password, tenantSlug } = req.body as AuthRequest & { tenantSlug: string };
-
-    // Validate input
-    if (!email || !password || !tenantSlug) {
-      res.status(400).json({
-        success: false,
-        error: {
-          code: 'MISSING_FIELDS',
-          message: 'Missing required fields: email, password, tenantSlug',
-        },
-        timestamp: new Date().toISOString(),
-      });
-      return;
-    }
+    // Log temporário para debug
+    console.log('LOGIN_REQUEST', req.body);
 
     try {
+      const { email, password, tenantSlug } = req.body as AuthRequest & { tenantSlug: string };
+
+      // Validate input
+      if (!email || !password || !tenantSlug) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'MISSING_FIELDS',
+            message: 'Missing required fields: email, password, tenantSlug',
+            details: null
+          },
+          timestamp: new Date().toISOString(),
+        });
+        return;
+      }
+
       // Get tenant by slug
       const tenant = await db.getOne(
         'SELECT id FROM tenants WHERE slug = $1',
@@ -166,6 +170,7 @@ router.post(
           error: {
             code: 'TENANT_NOT_FOUND',
             message: `Tenant with slug "${tenantSlug}" not found`,
+            details: null
           },
           timestamp: new Date().toISOString(),
         });
@@ -185,7 +190,8 @@ router.post(
           success: false,
           error: {
             code: 'INVALID_CREDENTIALS',
-            message: 'Invalid email or password',
+            message: 'Usuário ou senha inválidos',
+            details: null
           },
           timestamp: new Date().toISOString(),
         });
@@ -198,6 +204,7 @@ router.post(
           error: {
             code: 'USER_INACTIVE',
             message: 'User account is inactive',
+            details: null
           },
           timestamp: new Date().toISOString(),
         });
@@ -211,7 +218,8 @@ router.post(
           success: false,
           error: {
             code: 'INVALID_CREDENTIALS',
-            message: 'Invalid email or password',
+            message: 'Usuário ou senha inválidos',
+            details: null
           },
           timestamp: new Date().toISOString(),
         });
@@ -250,13 +258,13 @@ router.post(
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      console.error('[AUTH] Login error:', error);
+      console.error('LOGIN_ERROR', error);
       res.status(500).json({
         success: false,
         error: {
           code: 'LOGIN_ERROR',
-          message: 'Failed to login',
-          details: error instanceof Error ? error.message : undefined,
+          message: 'Erro interno ao tentar login',
+          details: error instanceof Error ? error.message : String(error)
         },
         timestamp: new Date().toISOString(),
       });
