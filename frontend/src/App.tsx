@@ -28,6 +28,7 @@ const Settings = lazy(() => import('./pages/Settings'));
 const Auditoria = lazy(() => import('./pages/Auditoria'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const AccessDenied = lazy(() => import('./pages/AccessDenied'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 
 /**
  * Loading fallback component during lazy loading
@@ -76,6 +77,17 @@ function AppRoutes() {
           <Suspense fallback={<PageSkeleton />}>
             <RouteGuard type="public">
               <Login />
+            </RouteGuard>
+          </Suspense>
+        }
+      />
+
+      <Route
+        path="/recuperar-acesso"
+        element={
+          <Suspense fallback={<PageSkeleton />}>
+            <RouteGuard type="public">
+              <ForgotPassword />
             </RouteGuard>
           </Suspense>
         }

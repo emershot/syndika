@@ -84,6 +84,10 @@ export default function Login() {
     }
   };
 
+  const handleForgotPassword = () => {
+    navigate('/recuperar-acesso');
+  };
+
   const handleDemoLogin = async (emailDemo: string) => {
     setError('');
     setEmailError('');
@@ -297,9 +301,13 @@ export default function Login() {
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Esqueceu sua senha?{' '}
-            <a href="#" className="text-primary hover:underline">
+            <button
+              type="button"
+              onClick={handleForgotPassword}
+              className="text-primary hover:underline"
+            >
               Recuperar acesso
-            </a>
+            </button>
           </p>
         </div>
       </div>

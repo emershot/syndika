@@ -6,7 +6,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ticketsAPI, CreateTicketRequest, UpdateTicketRequest } from '@/lib/api';
 import { Ticket } from '@/types/condominium';
-import { QUERY_KEYS } from '@/lib/queryClient';
+import { QUERY_KEYS } from '@/lib/queryKeys';
 import { useToast } from '@/hooks/use-toast';
 
 /**
@@ -30,7 +30,7 @@ export function useCreateTicket() {
     
     onSuccess: (newTicket) => {
       // Invalida cache de tickets para recarregar lista
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.tickets.all });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.tickets.all() });
       
       // Feedback visual
       toast({
@@ -73,11 +73,11 @@ export function useUpdateTicket() {
     
     onSuccess: (updatedTicket, variables) => {
       // Invalida cache de tickets
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.tickets.all });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.tickets.all() });
       
       // Atualiza cache específico do ticket
-      queryClient.invalidateQueries({ 
-        queryKey: QUERY_KEYS.tickets.detail(variables.id) 
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.tickets.detail(variables.id)
       });
       
       toast({
@@ -120,11 +120,11 @@ export function useDeleteTicket() {
     
     onSuccess: (_, deletedId) => {
       // Invalida cache de tickets
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.tickets.all });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.tickets.all() });
       
       // Remove do cache específico
-      queryClient.removeQueries({ 
-        queryKey: QUERY_KEYS.tickets.detail(deletedId) 
+      queryClient.removeQueries({
+        queryKey: QUERY_KEYS.tickets.detail(deletedId)
       });
       
       toast({
