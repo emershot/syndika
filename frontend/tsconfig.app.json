@@ -14,12 +14,17 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    /* Linting - Desabilitado temporariamente para desenvolvimento rápido */
-    "strict": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noImplicitAny": false,
-    "noFallthroughCasesInSwitch": false,
+    /* Linting - ATIVADO para segurança e qualidade de código */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
+    "noFallthroughCasesInSwitch": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
 
     /* Path mapping */
     "baseUrl": ".",

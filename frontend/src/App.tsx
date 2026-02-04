@@ -1,150 +1,234 @@
+import { lazy, Suspense } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { queryClient } from "@/lib/queryClient";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { TimezoneProvider } from "@/contexts/TimezoneContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { useAuth } from "@/contexts/useAuth";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
-import { Skeleton } from "@/components/ui/skeleton";
 import { RouteGuard } from "@/components/RouteGuard";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import Announcements from "./pages/Announcements";
-import Tickets from "./pages/Tickets";
-import Reservations from "./pages/Reservations";
-import ReservationCalendar from "./pages/ReservationCalendar";
-import Residents from "./pages/Residents";
-import Settings from "./pages/Settings";
-import Auditoria from "./pages/Auditoria";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import AccessDenied from "./pages/AccessDenied";
+import LoadingSkeleton from "@/components/common/LoadingSkeleton";
 
-const queryClient = new QueryClient();
+// Pages with lazy loading for code splitting
+// Reduce initial bundle size by loading pages on demand
+const Login = lazy(() => import('./pages/Login'));
+const Index = lazy(() => import('./pages/Index'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Announcements = lazy(() => import('./pages/Announcements'));
+const Tickets = lazy(() => import('./pages/Tickets'));
+const Reservations = lazy(() => import('./pages/Reservations'));
+const ReservationCalendar = lazy(() => import('./pages/ReservationCalendar'));
+const Residents = lazy(() => import('./pages/Residents'));
+const Settings = lazy(() => import('./pages/Settings'));
+const Auditoria = lazy(() => import('./pages/Auditoria'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+const AccessDenied = lazy(() => import('./pages/AccessDenied'));
 
+/**
+ * Loading fallback component during lazy loading
+ */
+const PageSkeleton = () => <LoadingSkeleton className="p-4" />;
+
+/**
+ * HomeRoute - Redireciona baseado em auth status e role do usuário
+ * Pattern: AuthContext e useAuth são globais, então funciona em qualquer lugar
+ */
 function HomeRoute() {
   const { isAuthenticated, user } = useAuth();
-  
+
   if (!isAuthenticated) {
     return <Index />;
   }
-  
-  // Redirecionar baseado no role
+
+  // Síndico e SuperAdmin vão para dashboard
   if (user?.role === 'sindico' || user?.role === 'superadmin') {
     return <Navigate to="/dashboard" replace />;
   }
-  
-  // Morador e Conselho vão para Avisos (página pública)
+
+  // Morador e Conselho vão para avisos
   return <Navigate to="/avisos" replace />;
 }
 
+/**
+ * AppRoutes - Configuração de rotas com proteção
+ * Usa RouteGuard para validar permissões
+ */
 function AppRoutes() {
-  const { isAuthenticated } = useAuth();
-
   return (
     <Routes>
-      <Route 
-        path="/" 
-        element={<HomeRoute />}
-      />
-      <Route 
-        path="/login" 
+      <Route
+        path="/"
         element={
-          <RouteGuard type="public">
-            <Login />
-          </RouteGuard>
-        } 
+          <Suspense fallback={<PageSkeleton />}>
+            <HomeRoute />
+          </Suspense>
+        }
       />
+
+      <Route
+        path="/login"
+        element={
+          <Suspense fallback={<PageSkeleton />}>
+            <RouteGuard type="public">
+              <Login />
+            </RouteGuard>
+          </Suspense>
+        }
+      />
+
       <Route
         path="/access-denied"
-        element={<AccessDenied />}
+        element={
+          <Suspense fallback={<PageSkeleton />}>
+            <AccessDenied />
+          </Suspense>
+        }
       />
+
       <Route
         path="/dashboard"
         element={
-          <RouteGuard type="sindico-only">
-            <Dashboard />
-          </RouteGuard>
+          <Suspense fallback={<PageSkeleton />}>
+            <RouteGuard type="sindico-only">
+              <Dashboard />
+            </RouteGuard>
+          </Suspense>
         }
       />
+
       <Route
         path="/avisos"
         element={
-          <RouteGuard type="private">
-            <Announcements />
-          </RouteGuard>
+          <Suspense fallback={<PageSkeleton />}>
+            <RouteGuard type="private">
+              <Announcements />
+            </RouteGuard>
+          </Suspense>
         }
       />
+
       <Route
         path="/chamados"
         element={
-          <RouteGuard type="private">
-            <Tickets />
-          </RouteGuard>
+          <Suspense fallback={<PageSkeleton />}>
+            <RouteGuard type="private">
+              <Tickets />
+            </RouteGuard>
+          </Suspense>
         }
       />
+
       <Route
         path="/reservas"
         element={
-          <RouteGuard type="private">
-            <Reservations />
-          </RouteGuard>
+          <Suspense fallback={<PageSkeleton />}>
+            <RouteGuard type="private">
+              <Reservations />
+            </RouteGuard>
+          </Suspense>
+        }
+      />
+
+      <Route
+        path="/calendario"
+        element={
+          <Suspense fallback={<PageSkeleton />}>
+            <RouteGuard type="private">
+              <ReservationCalendar />
+            </RouteGuard>
+          </Suspense>
         }
       />
 
       <Route
         path="/moradores"
         element={
-          <RouteGuard type="sindico-only">
-            <Residents />
-          </RouteGuard>
+          <Suspense fallback={<PageSkeleton />}>
+            <RouteGuard type="sindico-only">
+              <Residents />
+            </RouteGuard>
+          </Suspense>
         }
       />
+
       <Route
         path="/configuracoes"
         element={
-          <RouteGuard type="sindico-only">
-            <Settings />
-          </RouteGuard>
+          <Suspense fallback={<PageSkeleton />}>
+            <RouteGuard type="sindico-only">
+              <Settings />
+            </RouteGuard>
+          </Suspense>
         }
       />
+
       <Route
         path="/auditoria"
         element={
-          <RouteGuard type="sindico-only">
-            <Auditoria />
-          </RouteGuard>
+          <Suspense fallback={<PageSkeleton />}>
+            <RouteGuard type="sindico-only">
+              <Auditoria />
+            </RouteGuard>
+          </Suspense>
         }
       />
-      <Route path="*" element={<NotFound />} />
+
+      {/* 404 - Must be last */}
+      <Route
+        path="*"
+        element={
+          <Suspense fallback={<PageSkeleton />}>
+            <NotFound />
+          </Suspense>
+        }
+      />
     </Routes>
   );
 }
 
-const App = () => (
-  <ErrorBoundary>
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <ThemeProvider>
-          <NotificationProvider>
-            <TimezoneProvider>
-              <TooltipProvider>
-                <Toaster />
-                <Sonner />
-                <BrowserRouter>
-                  <AppRoutes />
-                </BrowserRouter>
-              </TooltipProvider>
-            </TimezoneProvider>
-          </NotificationProvider>
-        </ThemeProvider>
-      </AuthProvider>
-    </QueryClientProvider>
-  </ErrorBoundary>
-);
+/**
+ * App - Root component with provider stack
+ *
+ * Provider order (bottom to top dependencies):
+ * 1. QueryClientProvider - for async state management
+ * 2. AuthProvider - for authentication context
+ * 3. ThemeProvider - for theme context
+ * 4. NotificationProvider - for notifications
+ * 5. TimezoneProvider - for timezone handling
+ * 6. TooltipProvider - for Radix UI tooltips
+ * 7. Router - for routing (wraps everything)
+ * 8. ErrorBoundary - catches React errors
+ */
+function App() {
+  return (
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <AuthProvider>
+            <ThemeProvider>
+              <NotificationProvider>
+                <TimezoneProvider>
+                  <TooltipProvider>
+                    {/* Global UI providers for toasts */}
+                    <Toaster />
+                    <Sonner />
+
+                    {/* Routes with lazy loading */}
+                    <AppRoutes />
+                  </TooltipProvider>
+                </TimezoneProvider>
+              </NotificationProvider>
+            </ThemeProvider>
+          </AuthProvider>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </ErrorBoundary>
+  );
+}
 
 export default App;

@@ -5,9 +5,16 @@ import { queryClient } from "./lib/queryClient";
 import App from "./App.tsx";
 import "./index.css";
 
-const enableDevtools = import.meta.env.VITE_ENABLE_DEVTOOLS === 'true';
+const enableDevtools = import.meta.env.VITE_ENABLE_DEVTOOLS === "true";
 
-createRoot(document.getElementById("root")!).render(
+const rootElement = document.getElementById("root");
+if (!rootElement) {
+  throw new Error(
+    "Root element not found. Make sure index.html has a <div id='root'></div>"
+  );
+}
+
+createRoot(rootElement).render(
   <QueryClientProvider client={queryClient}>
     <App />
     {enableDevtools && <ReactQueryDevtools initialIsOpen={false} />}
