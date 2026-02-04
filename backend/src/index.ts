@@ -12,7 +12,7 @@ import { sendError } from './utils/response';
 dotenv.config();
 
 const app: Express = express();
-const PORT = process.env.PORT || 4000;
+const PORT = Number(process.env.PORT) || 4000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // ============================================================================
@@ -191,7 +191,7 @@ app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
 // Server Startup
 // ============================================================================
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`
 ╔════════════════════════════════════════════════════════╗
 ║                                                        ║
