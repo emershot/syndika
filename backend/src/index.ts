@@ -1,15 +1,57 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth';
 import tenantRoutes from './routes/tenants';
 import { testConnection } from './config/database';
+import { logger, requestLogger } from './utils/logger';
+import { sendSuccess, sendError } from './utils/response';
 
 dotenv.config();
 
 const app: Express = express();
 const PORT = process.env.PORT || 4000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
+
+// ============================================================================
+// Environment Validation - CRITICAL
+// ============================================================================
+
+const requiredEnvVars = ['JWT_SECRET'];
+const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+
+if (missingEnvVars.length > 0) {
+  logger.error(`Missing critical environment variables: ${missingEnvVars.join(', ')}`);
+  process.exit(1);
+}
+
+// ============================================================================
+// Security Middleware
+// ============================================================================
+
+// Helmet: Set security HTTP headers
+app.use(helmet());
+
+// Rate Limiting - Global
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Rate Limiting - Auth endpoints (stricter)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // limit each IP to 5 login/register attempts
+  message: 'Too many authentication attempts, please try again later.',
+  skipSuccessfulRequests: true, // Don't count successful requests
+});
+
+app.use(globalLimiter);
 
 // ============================================================================
 // CORS Configuration
@@ -20,6 +62,7 @@ const corsOptions = {
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
+  maxAge: 86400, // 24 hours
 };
 
 app.use(cors(corsOptions));
@@ -32,14 +75,10 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // ============================================================================
-// Request Logging
+// Request Logging & Tracing
 // ============================================================================
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-  const timestamp = new Date().toISOString();
-  console.log(`[${timestamp}] ${req.method} ${req.path}`);
-  next();
-});
+app.use(requestLogger);
 
 // ============================================================================
 // Routes
@@ -110,7 +149,9 @@ app.get('/api/v1', (req: Request, res: Response) => {
 // Route Handlers
 // ============================================================================
 
-// Authentication Routes
+// Authentication Routes (with stricter rate limiting)
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
 app.use('/api/auth', authRoutes);
 
 // Tenant Routes
@@ -121,12 +162,10 @@ app.use('/api/tenants', tenantRoutes);
 // ============================================================================
 
 app.use((req: Request, res: Response) => {
-  res.status(404).json({
-    error: 'Not Found',
+  sendError(res, {
+    code: 'NOT_FOUND',
     message: `Route ${req.method} ${req.path} not found`,
-    statusCode: 404,
-    timestamp: new Date().toISOString(),
-  });
+  }, 404);
 });
 
 // ============================================================================
@@ -134,13 +173,18 @@ app.use((req: Request, res: Response) => {
 // ============================================================================
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error('[ERROR]', err);
-  res.status(500).json({
-    error: 'Internal Server Error',
-    message: NODE_ENV === 'development' ? err.message : 'Something went wrong',
-    statusCode: 500,
-    timestamp: new Date().toISOString(),
+  logger.error('Unhandled error:', {
+    message: err.message,
+    stack: NODE_ENV === 'development' ? err.stack : undefined,
+    path: req.path,
+    method: req.method,
   });
+
+  const statusCode = (err as any).statusCode || 500;
+  const code = (err as any).code || 'INTERNAL_SERVER_ERROR';
+  const message = NODE_ENV === 'development' ? err.message : 'Internal server error';
+
+  sendError(res, { code, message }, statusCode);
 });
 
 // ============================================================================

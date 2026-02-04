@@ -9,9 +9,11 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
     "typecheck": "tsc --noEmit",
     "db:migrate": "ts-node-dev src/scripts/migrate.ts",
-    "db:seed": "ts-node-dev src/scripts/seed.ts"
+    "db:seed": "ts-node-dev src/scripts/seed.ts",
+    "validate": "npm run typecheck && npm run lint"
   },
   "keywords": [
     "condominium",
@@ -27,9 +29,12 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0",
     "jsonwebtoken": "^9.1.2",
     "pg": "^8.11.3",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -39,6 +44,9 @@
     "@types/node": "^20.10.6",
     "@types/pg": "^8.11.4",
     "@types/uuid": "^9.0.7",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.3.3"
   }

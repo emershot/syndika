@@ -2,7 +2,19 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { JWTPayload, AuthenticatedRequest, UserRole } from '../types/index';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+// ============================================================================
+// JWT Configuration - MUST be set in environment (Production Requirement)
+// ============================================================================
+
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error(
+    'CRITICAL ERROR: JWT_SECRET environment variable is not defined.\n' +
+    'This is a production security requirement.\n' +
+    'Set JWT_SECRET in your .env file or environment variables.\n' +
+    'Example: JWT_SECRET=$(openssl rand -hex 32)'
+  );
+}
 
 // ============================================================================
 // JWT Token Creation
