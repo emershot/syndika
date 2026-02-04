@@ -20,7 +20,7 @@ VALUES (
 ON CONFLICT (slug) DO NOTHING;
 
 -- ============================================================
--- 2. USUÁRIO ADMIN DEMO
+-- 2. USUÁRIO SÍNDICO DEMO
 -- ============================================================
 
 -- Senha: demo123
@@ -42,8 +42,8 @@ VALUES (
   'demo-tenant-001',
   'admin@demo.com',
   '$2a$10$EixZaYVK1fsbw1ZfbX3OXe.DWGnZnI7aAqMJFLZTJBQWKPy7nqLqG', -- demo123
-  'Admin Demo',
-  'admin',
+  'Carlos Silva',
+  'sindico',
   '101',
   '(11) 99999-9999',
   true,

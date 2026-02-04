@@ -5,7 +5,7 @@ import { AuthContext, AuthContextType } from './authContextObject';
 import { authAPI, getStoredUser, getToken } from '@/lib/api';
 
 const STORAGE_KEY = 'syndika_user';
-const DEFAULT_TENANT_SLUG = 'esperanca'; // Tenant padrão para desenvolvimento
+const DEFAULT_TENANT_SLUG = 'demo'; // Tenant padrão para demonstração
 
 /**
  * Validar email com regex simples

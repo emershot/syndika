@@ -280,7 +280,7 @@ export default function Login() {
                 <div className="mt-4 grid gap-2">
                   <Button
                     variant="outline"
-                    onClick={() => handleDemoLogin('carlos@email.com')}
+                    onClick={() => handleDemoLogin('admin@demo.com')}
                     disabled={isLoading}
                     className="w-full"
                   >
@@ -288,7 +288,7 @@ export default function Login() {
                   </Button>
                   <Button
                     variant="outline"
-                    onClick={() => handleDemoLogin('maria@email.com')}
+                    onClick={() => handleDemoLogin('morador@demo.com')}
                     disabled={isLoading}
                     className="w-full"
                   >
