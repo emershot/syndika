@@ -1,6 +1,10 @@
 import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 import { JWTPayload, AuthenticatedRequest, UserRole } from '../types/index';
+
+// Load environment early
+dotenv.config();
 
 // ============================================================================
 // JWT Configuration - MUST be set in environment (Production Requirement)

@@ -46,7 +46,7 @@ const globalLimiter = rateLimit({
 // Rate Limiting - Auth endpoints (stricter)
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // limit each IP to 5 login/register attempts
+  max: NODE_ENV === 'development' ? 50 : 5, // mais folga em dev para testes locais
   message: 'Too many authentication attempts, please try again later.',
   skipSuccessfulRequests: true, // Don't count successful requests
 });
